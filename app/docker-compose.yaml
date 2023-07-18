@@ -1,0 +1,30 @@
+services:
+#Container의 Service 항목과, Image를 정의
+  app:
+    image: node:18-alpine
+#시작시 실행된 Command와 Host Port와 Container Port 정의 및 Mapping
+    command: sh -c "yarn install && yarn run dev"
+    ports:
+      - 3000:3000
+#Working Directory(~w/app)와 Volume Mapping(-v "$(pwd):/app")을 모두 Migration
+    working_dir: /app
+    volumes:
+      - ./:/app
+#environment key를 사용하여 환경 변수 정의를 Migration
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASSWORD: secret
+      MYSQL_DB: todos
+#MySQL Service 정의
+  mysql:
+    image: mysql:8.0
+#Volume Mapping을 정의하고, 환경변수를 지정
+    volumes:
+      - todo-mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: todos
+
+volumes:
+  todo-mysql-data:
